@@ -11,6 +11,7 @@ const status = require('./deepstream-status')
 const stop = require('./deepstream-stop')
 const info = require('./deepstream-info')
 const hash = require('./deepstream-hash')
+const service = require('./deepstream-service')
 
 const program = new Command('deepstream')
 program
@@ -23,6 +24,7 @@ status(program)
 install(program)
 info(program)
 hash(program)
+service(program)
 
 program.parse(process.argv)
 
