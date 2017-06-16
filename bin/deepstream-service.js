@@ -1,6 +1,6 @@
 'use strict'
 
-const service = require('os-service')
+const service = require('../src/service/service')
 
 module.exports = function (program) {
   program
@@ -10,21 +10,18 @@ module.exports = function (program) {
 }
 
 function addService(action) {
+  const name = 'deepstream'
+
   if (action === 'add') {
     const options = {
-        displayName: "MyService",
-        programArgs: ["--server-port", 8888],
-        username: ".\Stephen Vickers",
-        password: "MyPassword :)"
+      programArgs: ["--server-port", 8888]
     }
 
-    service.add ("my-service", options, function(error) {
-        console.log('done')
-        if (error)
-            console.trace(error);
+    service.add (name, options, function(error, result) {
+      
     })
   } else if (action === 'remove') {
-    service.remove ("my-service", options, function(error) {
+    service.remove (name, function(error, result) {
         if (error)
             console.trace(error);
     })
