@@ -4,10 +4,6 @@ const fs = require('fs')
 const systemdTemplate = require('./systemd')
 const initdTemplate = require('./initd')
 
-const ctlOptions = {
-  mode: 493 // rwxr-xr-x
-}
-
 function hasSystemD () {
   return fs.existsSync('/usr/lib/systemd/system') || fs.existsSync('/bin/systemctl')
 }
@@ -71,14 +67,30 @@ function setupSystemD (name, options, callback) {
 }
 
 function setupSystemV (name, options, callback) {
-  fs.writeFileSync(
-   `/etc/init.d/${name}`, 
-   initdTemplate(options), 
-   ctlOptions
-  )
-  child_process.execSync('chkconfig', ['--add', name])
-  child_process.execSync('update-rc.d', [name, 'defaults'])
-  callback(null, 'init.d service registered succesfully')
+  const filepath = `/etc/init.d/${name}`
+  console.log(`Installing service on: ${filepath}`)
+  fs.exists(filepath, exists => {
+    if(!exists) {
+      const script = initdTemplate(options)
+      fs.writeFile(filepath,script, err => {
+        if (err) {
+          callback(err)
+          return
+        }
+
+        fs.chmod(filepath,'755', err => {
+          if (err) {
+            callback(err)
+            return
+          }
+          
+          callback(err, 'init.d service registered succesfully')
+        })
+      })
+    } else {
+      callback('Service already exists, please uninstall first')
+    }
+  })
 }
 
 module.exports.add = function (name, options, callback) {
@@ -86,8 +98,8 @@ module.exports.add = function (name, options, callback) {
   options.pidFile = options.pidFile || `/var/run/${name}.pid`
 
   options.deepstreamExec = options.deepstreamExec || '/usr/bin/deepstream'
-  options.errOut = options.errOut || 'null'
-  options.stdOut = options.stdOut || 'null'
+  options.errOut = options.errOut || `/var/log/deepstream/${name}-err.log`
+  options.stdOut = options.stdOut || `/var/log/deepstream/${name}-log.log`
   options.user = options.user || 'root'
   options.group = options.group || 'root'
 
