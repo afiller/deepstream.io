@@ -7,8 +7,6 @@ const pgk = require('../package.json')
 const Command = require('commander').Command
 const install = require('./deepstream-install')
 const start = require('./deepstream-start')
-const status = require('./deepstream-status')
-const stop = require('./deepstream-stop')
 const info = require('./deepstream-info')
 const hash = require('./deepstream-hash')
 const service = require('./deepstream-service')
@@ -19,8 +17,6 @@ program
 	.version(pgk.version)
 
 start(program)
-stop(program)
-status(program)
 install(program)
 info(program)
 hash(program)

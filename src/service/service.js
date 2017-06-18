@@ -4,14 +4,25 @@ const fs = require('fs')
 const systemdTemplate = require('./systemd')
 const initdTemplate = require('./initd')
 
+/**
+ * Returns true if system support systemd daemons
+ * @return {Boolean}
+ */
 function hasSystemD () {
   return fs.existsSync('/usr/lib/systemd/system') || fs.existsSync('/bin/systemctl')
 }
 
+/**
+ * Returns true if system support init.d daemons
+ * @return {Boolean}
+ */
 function hasSystemV () {
   return fs.existsSync('/etc/init.d')
 }
 
+/**
+ * Deletes a service file from /etc/systemd/system/
+ */
 function deleteSystemD (name, callback) {
   const filepath = `/etc/systemd/system/${name}.service`
   console.log(`Removing service on: ${filepath}`)
@@ -35,6 +46,12 @@ function deleteSystemD (name, callback) {
   })
 }
 
+/**
+ * Installs a service file to /etc/systemd/system/
+ *
+ * It deals with logs, restarts and by default points
+ * to the normal system install
+ */
 function setupSystemD (name, options, callback) {
   const filepath = `/etc/systemd/system/${name}.service`
   console.log(`Installing service on: ${filepath}`)
@@ -66,6 +83,33 @@ function setupSystemD (name, options, callback) {
   })
 }
 
+/**
+ * Deletes a service file from /etc/init.d/
+ */
+function deleteSystemD (name, callback) {
+  const filepath = `/etc/init.d/${name}`
+  console.log(`Removing service on: ${filepath}`)
+  fs.exists(filepath, exists => {
+    if (exists) {
+      fs.unlink(filepath, err => {
+        if (err) {
+          callback(err)
+          return
+        }
+        callback(err, 'SystemD service registered succesfully')
+      })
+    } else {
+      callback(`Service doesn't exists, nothing to uninstall`)
+    }
+  })
+}
+
+/**
+ * Installs a service file to /etc/init.d/
+ *
+ * It deals with logs, restarts and by default points
+ * to the normal system install
+ */
 function setupSystemV (name, options, callback) {
   const filepath = `/etc/init.d/${name}`
   console.log(`Installing service on: ${filepath}`)
@@ -93,6 +137,12 @@ function setupSystemV (name, options, callback) {
   })
 }
 
+/**
+ * Adds a service, either via systemd or init.d
+ * @param {String}   name the name of the service 
+ * @param {Object}   options  options to configure deepstream service
+ * @param {Function} callback called when complete
+ */
 module.exports.add = function (name, options, callback) {
   options.name = name
   options.pidFile = options.pidFile || `/var/run/${name}.pid`
@@ -120,6 +170,11 @@ module.exports.add = function (name, options, callback) {
   }
 }
 
+/**
+ * Delete a service, either from systemd or init.d
+ * @param {String}   name the name of the service 
+ * @param {Function} callback called when complete
+ */
 module.exports.remove = function (name, callback) {
   if (hasSystemD()) {
     deleteSystemD(name, callback)
