@@ -8,9 +8,13 @@ After=network.target
 Type=simple
 StandardOutput=${config.stdOut}
 StandardError=${config.errOut}
-UMask=0007
 ExecStart=${config.deepstreamExec} ${config.deepstreamArgs}
+Restart=always
+User=${config.user}
+Group=${config.group}
+Environment=
 
 [Install]
+WantedBy=multi-user.target
 `
 }
