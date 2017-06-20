@@ -10,8 +10,7 @@ module.exports = function (program) {
     .option('-c, --config [file]', 'configuration file, parent directory will be used as prefix for other config files')
 
     .option('--service-name <name>', 'the name to register the service')
-    .option('--std-out <directory>', 'the directory for output logs')
-    .option('--std-err <directory>', 'the directory for error logs')
+    .option('--log-dir <directory>', 'the directory for output logs')
     .option('--dry-run', 'outputs the service file to screen')
     .action(execute)
 }
@@ -29,9 +28,9 @@ function execute(action) {
 
   if (action === 'add') {
     const options = {
+      exec: `${__dirnam}/deepstream`,
       programArgs: [],
-      stdOut: this.stdOut,
-      stdErr: this.stdErr,
+      logDir: this.logDir || '/var/log/deepstream',
       dryRun: this.dryRun
     }
 
@@ -43,9 +42,11 @@ function execute(action) {
     service.add (name, options, response)
   } else if (action === 'remove') {
     service.remove (name, response)
-  } else if (action === 'run' ) {
-    service.run (name, response)
-  }else {
+  } else if (action === 'start' ) {
+    service.start (name, response)
+  } else if (action === 'stop' ) {
+    service.stop (name, response)
+  } else {
     console.log(`Unknown action for service, please 'add' or 'remove'`)
   }
 }

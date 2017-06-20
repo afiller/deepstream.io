@@ -21,14 +21,7 @@ module.exports = function (program) {
 }
 
 function action () {
-  try {
-    const nexeres = require('nexeres') // eslint-disable-line
-    daemon.start({
-      processExec: '/usr/bin/deepstream'
-    })
-  } catch (e) {
-    daemon.start({
-      processExec: `${process.cwd()}/bin/deepstream`
-    })
-  }
+  daemon.start({
+    processExec: `${__dirname}/deepstream`
+  })
 }
