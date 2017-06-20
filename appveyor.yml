@@ -5,7 +5,7 @@ os:
   - Visual Studio 2015
 
 install:
-  - ps: Install-Product node 6.10.1 x64
+  - ps: Install-Product node 6.11.0 x64
   - git submodule update --init --recursive
   - npm install
 
@@ -14,7 +14,7 @@ test_script:
   - npm --version
   - npm test
   # Artifacts are packaged before before_deploy
-  - bash scripts\package.sh
+  - bash scripts\package.sh true
   - For /d %%d in ( build\** ) do MOVE %%d %cd%
 
 artifacts:
