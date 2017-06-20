@@ -4,14 +4,15 @@ const service = require('deepstream.io-service')
 
 module.exports = function (program) {
   program
-    .command('service [add|remove|run]')
-    .description('Add or remove deepstream as a service to your operating system')
+    .command('service [add|remove|start|stop]')
+    .description('Add, remove, start or stop deepstream as a service to your operating system')
 
     .option('-c, --config [file]', 'configuration file, parent directory will be used as prefix for other config files')
 
     .option('--service-name <name>', 'the name to register the service')
     .option('--std-out <directory>', 'the directory for output logs')
     .option('--std-err <directory>', 'the directory for error logs')
+    .option('--dry-run', 'outputs the service file to screen')
     .action(execute)
 }
 
@@ -30,7 +31,8 @@ function execute(action) {
     const options = {
       programArgs: [],
       stdOut: this.stdOut,
-      stdErr: this.stdErr
+      stdErr: this.stdErr,
+      dryRun: this.dryRun
     }
 
     if (this.config) {
