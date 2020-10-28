@@ -58,7 +58,7 @@
     "jasmine": "^3.4.0",
     "jasmine-spec-reporter": "^4.2.1",
     "n0p3": "^1.0.2",
-    "nexe": "3.0.3",
+    "nexe": "3.3.7",
     "proxyquire": "2.1.0",
     "sinon": "^7.3.1",
     "watch": "^1.0.2"
