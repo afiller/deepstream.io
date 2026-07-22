@@ -31,7 +31,7 @@
     "url": "https://github.com/deepstreamIO/deepstream.io.git"
   },
   "dependencies": {
-    "@deepstream/client": "https://github.com/afiller/deepstream.io-client-js.git#5c217a3fc5f2b50ea65b72e2e0ca3e8af3a209fa",
+    "@deepstream/client": "7.0.6",
     "adm-zip": "^0.5.2",
     "ajv": "^6.10.2",
     "bluebird": "^3.5.5",
